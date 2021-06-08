@@ -1,34 +1,34 @@
 from keygen.crypto_coin import CryptoCoin
 from keygen.crypto_coin_service import CoinService
 
-# for ethereum wallets
-from ecdsa import SigningKey, SECP256k1
-import sha3
-import codecs
+from bip_utils import BitcoinConf, Bip44Coins, WifDecoder, Bip44, Base58Encoder, Bip39MnemonicGenerator, \
+    Bip39SeedGenerator, Base58Decoder
+from bip_utils.utils import CryptoUtils, KeyUtils
 
-import re
+from keygen.wif_validator import is_compressed_wif
+import binascii
 
 
 class EthCoinService(CoinService):
 
     def generate(self):
-        keccak = sha3.keccak_256()
-        priv = SigningKey.generate(curve=SECP256k1)
-        pub = priv.get_verifying_key().to_string()
-        keccak.update(pub)
-        address = keccak.hexdigest()[24:]
-        priv_hex = str(codecs.encode(priv.to_string(), 'hex'))[2:-1]
-        return CryptoCoin("0x{}".format(address), priv_hex)
+        # Generate random mnemonic
+        mnemonic = Bip39MnemonicGenerator.FromWordsNumber(12)
+
+        # Generate seed from mnemonic
+        seed_bytes = Bip39SeedGenerator(mnemonic).Generate()
+
+        # Generate BIP44 master keys
+        bip_obj_mst = Bip44.FromSeed(seed_bytes, Bip44Coins.ETHEREUM)
+
+        address = bip_obj_mst.PublicKey().ToAddress()
+        wif = bip_obj_mst.PrivateKey().Raw().ToHex()
+        seed = mnemonic
+
+        return CryptoCoin(address, wif, seed)
 
     def get_coin(self, private_key):
-        keccak = sha3.keccak_256()
-        decoded_private_key = codecs.decode(private_key, 'hex')
-        priv = SigningKey.from_string(decoded_private_key, curve=SECP256k1)
-        pub = priv.get_verifying_key().to_string()
-        keccak.update(pub)
-        address = keccak.hexdigest()[24:]
-        priv_hex = codecs.encode(priv.to_string(), 'hex')
-        return CryptoCoin("0x{}".format(address), priv_hex)
-
-    def generate_asset_id(self, coin):
-        return re.search('^0x(\\w{6}).+$', coin.address).group(1)
+        private_key_bytes = binascii.unhexlify(private_key)
+        key_pair = Bip44.FromAddressPrivKey(private_key_bytes, Bip44Coins.ETHEREUM)
+        address = key_pair.PublicKey().ToAddress()
+        return CryptoCoin(address, private_key)
