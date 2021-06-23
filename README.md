@@ -4,16 +4,19 @@
 
 Required Python version 3.8 (preferred Python 3.8.6)
 
+Python-3.8.6 download link: https://www.python.org/downloads/release/python-386/
+
 Download archive with the latest release of "Source Code (zip)" for Windows based system or "Source Code (tar.gz)" for Unix based system
 https://github.com/ReardenMetals/keygen-core/releases
 
 Run the python scipt to test the the keypair generation:
-python main.py
+    
+    python main.py
 
 ## Keygen code structure
 
 ### CryptoCoin class
-This data-class is located in keygen/crypto_coin.py, which has three fields
+This data-class is located in keygen/crypto_coin.py, which has three fields:
 - address (Public address of coin)
 - wif (Wallet import format of private key)
 - seed (Mnemonic security phrase)
