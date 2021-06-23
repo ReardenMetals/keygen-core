@@ -1,27 +1,23 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-from keygen.crypto_coin import CryptoCoin
-from keygen.crypto_coin_service import CoinService
-
 from keygen.crypto_coin_factory import CoinFactory
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
 
-def test_coin(currency):
+def default_input(message, default_val):
+    if default_val:
+        return input("%s [%s] : " % (message, default_val)) or default_val
+    else:
+        return input("%s " % message)
+
+
+def main():
+    currency = default_input("What crypto you making (BTC, ETH, ...)? ", "BTC").upper()
     service = CoinFactory.get_coin_service(currency)
     coin = service.generate()
-    print(currency)
-    print(coin)
+    print("Currency: {}".format(currency))
+    print("Address: {}".format(coin.address))
+    print("Wif: {}".format(coin.wif))
+    print("Seed: {}".format(coin.seed))
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    test_coin("BTC")
-    test_coin("BCH")
-    test_coin("LTC")
-    test_coin("DOGE")
-    test_coin("ETH")
+    main()
