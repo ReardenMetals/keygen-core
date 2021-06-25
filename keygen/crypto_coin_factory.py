@@ -9,8 +9,7 @@ class CoinFactory:
     def __init__(self):
         pass
 
-    @staticmethod
-    def get_available_currencies():
+    def get_available_currencies(self):
         return CoinFactory.get_default_available_currencies()
 
     @staticmethod
@@ -21,8 +20,7 @@ class CoinFactory:
     # def get_default_available_currencies():
     #     return [ 'DASH', 'BSV', 'XRP', 'XMR', 'BNB', 'EOS', 'POTE', 'ADA'] # For the next release.
 
-    @staticmethod
-    def get_coin_service(currency):
+    def get_coin_service(self, currency):
         if currency == "BTC":
             return BtcCoinService()
         if currency == "BCH":
