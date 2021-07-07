@@ -10,7 +10,7 @@ def default_input(message, default_val):
 
 def main():
     currency = default_input("What crypto you making (BTC, ETH, ...)? ", "BTC").upper()
-    service = CoinFactory.get_coin_service(currency)
+    service = CoinFactory().get_coin_service(currency)
     coin = service.generate()
     print("Currency: {}".format(currency))
     print("Address: {}".format(coin.address))
